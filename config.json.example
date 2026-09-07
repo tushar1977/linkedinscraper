@@ -1,0 +1,413 @@
+{
+  "proxies": {
+    
+  },
+  "headers": {
+    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36"
+  },
+  "OpenAI_API_KEY": "",
+  "OpenAI_Model": "gpt-3.5-turbo",
+  "resume_path": "/home/tushar/resumes/tushar_resume_SDEINTERn.pdf",
+  "search_queries": [
+    {
+      "keywords": "C++ Developer Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "C++ Developer Intern",
+      "location": "India",
+      "f_WT": ""
+    },
+    {
+      "keywords": "C Developer Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "C Developer Intern",
+      "location": "India",
+      "f_WT": ""
+    },
+    {
+      "keywords": "Systems Programming Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "Systems Programming Intern",
+      "location": "India",
+      "f_WT": ""
+    },
+    {
+      "keywords": "Linux Developer Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "Linux Developer Intern",
+      "location": "India",
+      "f_WT": ""
+    },
+    {
+      "keywords": "Kernel Developer Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "Kernel Developer Intern",
+      "location": "India",
+      "f_WT": ""
+    },
+    {
+      "keywords": "Cloud Engineer Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "Cloud Engineer Intern",
+      "location": "India",
+      "f_WT": ""
+    },
+    {
+      "keywords": "DevOps Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "DevOps Intern",
+      "location": "India",
+      "f_WT": ""
+    },
+    {
+      "keywords": "Backend Engineer Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "Backend Engineer Intern",
+      "location": "India",
+      "f_WT": ""
+    },
+    {
+      "keywords": "Backend Developer Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "Backend Developer Intern",
+      "location": "India",
+      "f_WT": ""
+    },
+    {
+      "keywords": "Software Engineer Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "Software Engineer Intern",
+      "location": "India",
+      "f_WT": ""
+    },
+    {
+      "keywords": "SDE Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "SDE Intern",
+      "location": "India",
+      "f_WT": ""
+    },
+    {
+      "keywords": "Full Stack Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "Full Stack Intern",
+      "location": "India",
+      "f_WT": ""
+    },
+    {
+      "keywords": "Blockchain Developer Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "Blockchain Developer Intern",
+      "location": "India",
+      "f_WT": ""
+    },
+    {
+      "keywords": "Rust Developer Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "Rust Developer Intern",
+      "location": "India",
+      "f_WT": ""
+    },
+    {
+      "keywords": "Python Developer Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "Python Developer Intern",
+      "location": "India",
+      "f_WT": ""
+    },
+    {
+      "keywords": "Site Reliability Engineer Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "Site Reliability Engineer Intern",
+      "location": "India",
+      "f_WT": ""
+    },
+    {
+      "keywords": "Platform Engineer Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "Platform Engineer Intern",
+      "location": "India",
+      "f_WT": ""
+    },
+    {
+      "keywords": "Infrastructure Engineer Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "Infrastructure Engineer Intern",
+      "location": "India",
+      "f_WT": ""
+    },
+    {
+      "keywords": "Kubernetes Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "Kubernetes Intern",
+      "location": "India",
+      "f_WT": ""
+    },
+    {
+      "keywords": "Docker Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "Docker Intern",
+      "location": "India",
+      "f_WT": ""
+    },
+    {
+      "keywords": "CI/CD Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "CI/CD Intern",
+      "location": "India",
+      "f_WT": ""
+    },
+    {
+      "keywords": "Game Development Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "Game Development Intern",
+      "location": "India",
+      "f_WT": ""
+    },
+    {
+      "keywords": "Web3 Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "Web3 Intern",
+      "location": "India",
+      "f_WT": ""
+    },
+    {
+      "keywords": "Solana Developer Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "Solana Developer Intern",
+      "location": "India",
+      "f_WT": ""
+    },
+    {
+      "keywords": "Operating Systems Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "Operating Systems Intern",
+      "location": "India",
+      "f_WT": ""
+    },
+    {
+      "keywords": "Embedded Systems Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "Embedded Systems Intern",
+      "location": "India",
+      "f_WT": ""
+    },
+    {
+      "keywords": "Performance Engineering Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "Performance Engineering Intern",
+      "location": "India",
+      "f_WT": ""
+    },
+    {
+      "keywords": "Data Engineer Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "Data Engineer Intern",
+      "location": "India",
+      "f_WT": ""
+    },
+    {
+      "keywords": "Observability Engineer Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "Observability Engineer Intern",
+      "location": "India",
+      "f_WT": ""
+    },
+    {
+      "keywords": "Node.js Developer Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "Node.js Developer Intern",
+      "location": "India",
+      "f_WT": ""
+    },
+    {
+      "keywords": "TypeScript Developer Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "TypeScript Developer Intern",
+      "location": "India",
+      "f_WT": ""
+    },
+    {
+      "keywords": "Microservices Developer Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "Microservices Developer Intern",
+      "location": "India",
+      "f_WT": ""
+    },
+    {
+      "keywords": "Distributed Systems Intern",
+      "location": "Remote",
+      "f_WT": "2"
+    },
+    {
+      "keywords": "Distributed Systems Intern",
+      "location": "India",
+      "f_WT": ""
+    }
+  ],
+  "desc_words": [
+    "intern",
+    "internship"
+  ],
+  "title_include": [
+    "intern",
+    "internship",
+    "software engineer intern",
+    "sde intern",
+    "backend intern",
+    "backend engineer intern",
+    "backend developer intern",
+    "python intern",
+    "python developer intern",
+    "data engineer intern",
+    "observability engineer intern",
+    "node.js developer intern",
+    "typescript developer intern",
+    "microservices developer intern",
+    "distributed systems intern",
+    "devops intern",
+    "cloud engineer intern",
+    "kubernetes intern",
+    "rust developer intern",
+    "solana developer intern",
+    "game development intern"
+  ],
+  "title_exclude": [
+    "senior",
+    "lead",
+    "principal",
+    "manager",
+    "staff",
+    "frontend",
+    "front-end",
+    "ui",
+    "ux"
+  ],
+  "company_exclude": [
+    "ClickJobs.io",
+    "Dice",
+    "inficore Soft",
+    "Hirect",
+    "Robert Half",
+    "Consulting",
+    "consulting",
+    "Apex Systems",
+    "TEKsystems",
+    "CyberCoders",
+    "Jobot",
+    "Insight Global",
+    "Randstad",
+    "Adecco",
+    "Kelly Services",
+    "Manpower",
+    "staffing",
+    "recruitment",
+    "consulting"
+  ],
+  "languages": [
+    "en"
+  ],
+  "timespan": "r604800",
+  "days_to_scrape": 14,
+  "pages_to_scrape": 10,
+  "rounds": 1,
+  "jobs_tablename": "jobs",
+  "filtered_jobs_tablename": "filtered_jobs",
+  "app_table": "jobs",
+  "db_path": "./data/my_database.db"
+}
