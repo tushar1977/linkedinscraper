@@ -1,4 +1,6 @@
 import requests
+
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import json
 import sqlite3
 import sys
@@ -144,69 +146,95 @@ def create_connection(config):
     return conn
 
 def create_table(conn, df, table_name):
-    ''''
-    # Create a new table with the data from the dataframe
-    df.to_sql(table_name, conn, if_exists='replace', index=False)
-    print (f"Created the {table_name} table and added {len(df)} records")
-    '''
-    # Create a new table with the data from the DataFrame
-    # Prepare data types mapping from pandas to SQLite
+    """Create a new table with the data from the DataFrame"""
+    
     type_mapping = {
         'int64': 'INTEGER',
         'float64': 'REAL',
         'datetime64[ns]': 'TIMESTAMP',
         'object': 'TEXT',
-        'bool': 'INTEGER'
+        'bool': 'INTEGER',
+        'str': 'TEXT',
+        'int32': 'INTEGER',
+        'float32': 'REAL'
     }
     
-    # Prepare a string with column names and their types
+    # Prepare column definitions
     columns_with_types = ', '.join(
-        f'"{column}" {type_mapping[str(df.dtypes[column])]}'
+        f'"{column}" {type_mapping.get(str(df.dtypes[column]), "TEXT")}'
         for column in df.columns
     )
     
-    # Prepare SQL query to create a new table
+    # Create table SQL
     create_table_sql = f"""
-        CREATE TABLE IF NOT EXISTS "{table_name}" (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            {columns_with_types}
-        );
+    CREATE TABLE IF NOT EXISTS "{table_name}" (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        {columns_with_types}
+    );
     """
     
-    # Execute SQL query
     cursor = conn.cursor()
     cursor.execute(create_table_sql)
-    
-    # Commit the transaction
     conn.commit()
-
-    # Insert DataFrame records one by one
-    insert_sql = f"""
-        INSERT INTO "{table_name}" ({', '.join(f'"{column}"' for column in df.columns)})
-        VALUES ({', '.join(['?' for _ in df.columns])})
-    """
-    for record in df.to_dict(orient='records'):
-        cursor.execute(insert_sql, list(record.values()))
     
-    # Commit the transaction
-    conn.commit()
-
+    # Insert data using pandas to_sql
+    df.to_sql(table_name, conn, if_exists='append', index=False)
+    
     print(f"Created the {table_name} table and added {len(df)} records")
 
+def verify_and_sync_schema(conn, table_name, df):
+    """
+    Verify database schema matches DataFrame columns and sync if needed.
+    """
+    cursor = conn.cursor()
+    
+    # Get existing columns from the table
+    cursor.execute(f"PRAGMA table_info({table_name})")
+    existing_columns = {col[1]: col[2] for col in cursor.fetchall()}  # {column_name: data_type}
+    
+    # Type mapping
+    type_mapping = {
+        'int64': 'INTEGER',
+        'float64': 'REAL',
+        'datetime64[ns]': 'TIMESTAMP',
+        'object': 'TEXT',
+        'bool': 'INTEGER',
+        'str': 'TEXT',
+        'int32': 'INTEGER',
+        'float32': 'REAL'
+    }
+    
+    # Check for missing columns and add them
+    for column in df.columns:
+        if column not in existing_columns:
+            dtype = type_mapping.get(str(df.dtypes[column]), 'TEXT')
+            default_value = '0' if dtype == 'INTEGER' else "''"
+            
+            alter_sql = f'ALTER TABLE {table_name} ADD COLUMN "{column}" {dtype} DEFAULT {default_value}'
+            print(f"Adding missing column: {column} ({dtype})")
+            cursor.execute(alter_sql)
+    
+    conn.commit()
 def update_table(conn, df, table_name):
-    # Update the existing table with new records.
-    df_existing = pd.read_sql(f'select * from {table_name}', conn)
-
-    # Create a dataframe with unique records in df that are not in df_existing
-    df_new_records = pd.concat([df, df_existing, df_existing]).drop_duplicates(['title', 'company', 'date'], keep=False)
-
-    # If there are new records, append them to the existing table
+    """Update the existing table with new records"""
+    
+    # First, verify schema matches
+    verify_and_sync_schema(conn, table_name, df)
+    
+    # Read existing data
+    df_existing = pd.read_sql(f'SELECT * FROM {table_name}', conn)
+    
+    # Find new records (not in existing table)
+    df_new_records = pd.concat([df, df_existing, df_existing]).drop_duplicates(
+        ['title', 'company', 'date'], keep=False
+    )
+    
+    # Insert new records
     if len(df_new_records) > 0:
         df_new_records.to_sql(table_name, conn, if_exists='append', index=False)
-        print (f"Added {len(df_new_records)} new records to the {table_name} table")
+        print(f"Added {len(df_new_records)} new records to the {table_name} table")
     else:
-        print (f"No new records to add to the {table_name} table")
-
+        print(f"No new records to add to the {table_name} table")
 def table_exists(conn, table_name):
     # Check if the table already exists in the database
     cur = conn.cursor()
@@ -260,71 +288,91 @@ def find_new_jobs(all_jobs, conn, config):
     new_joblist = [job for job in all_jobs if not job_exists(jobs_db, job) and not job_exists(filtered_jobs_db, job)]
     return new_joblist
 
+
+
+def process_job(job, config):
+    try:
+        job_date = convert_date_format(job['date'])
+        job_date = datetime.combine(job_date, time())
+
+        if job_date < datetime.now() - timedelta(days=config['days_to_scrape']):
+            return None
+
+        print('Found new job:', job['title'], 'at', job['company'], job['job_url'])
+
+        desc_soup = get_with_retry(job['job_url'], config)
+        job['job_description'] = transform_job(desc_soup)
+
+        language = safe_detect(job['job_description'])
+        if language not in config['languages']:
+            print('Job description language not supported:', language)
+            # still returning job, same as your original logic
+
+        return job
+
+    except Exception as e:
+        print("Error processing job:", job.get("job_url"), e)
+        return None
 def main(config_file):
     start_time = tm.perf_counter()
     job_list = []
 
     config = load_config(config_file)
-    jobs_tablename = config['jobs_tablename'] # name of the table to store the "approved" jobs
-    filtered_jobs_tablename = config['filtered_jobs_tablename'] # name of the table to store the jobs that have been filtered out based on description keywords (so that in future they are not scraped again)
-    #Scrape search results page and get job cards. This step might take a while based on the number of pages and search queries.
+    jobs_tablename = config['jobs_tablename']
+    filtered_jobs_tablename = config['filtered_jobs_tablename']
+
     all_jobs = get_jobcards(config)
     conn = create_connection(config)
-    #filtering out jobs that are already in the database
+
     all_jobs = find_new_jobs(all_jobs, conn, config)
-    print ("Total new jobs found after comparing to the database: ", len(all_jobs))
+    print("Total new jobs found after comparing to the database:", len(all_jobs))
 
     if len(all_jobs) > 0:
 
-        for job in all_jobs:
-            job_date = convert_date_format(job['date'])
-            job_date = datetime.combine(job_date, time())
-            #if job is older than a week, skip it
-            if job_date < datetime.now() - timedelta(days=config['days_to_scrape']):
-                continue
-            print('Found new job: ', job['title'], 'at ', job['company'], job['job_url'])
-            desc_soup = get_with_retry(job['job_url'], config)
-            job['job_description'] = transform_job(desc_soup)
-            language = safe_detect(job['job_description'])
-            if language not in config['languages']:
-                print('Job description language not supported: ', language)
-                #continue
-            job_list.append(job)
-        #Final check - removing jobs based on job description keywords words from the config file
+        # 🔥 PARALLEL EXECUTION
+        max_workers = min(16, len(all_jobs))  # safe limit
+
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            futures = [executor.submit(process_job, job, config) for job in all_jobs]
+
+            for future in as_completed(futures):
+                result = future.result()
+                if result is not None:
+                    job_list.append(result)
+
+        # Final filtering
         jobs_to_add = remove_irrelevant_jobs(job_list, config)
-        print ("Total jobs to add: ", len(jobs_to_add))
-        #Create a list for jobs removed based on job description keywords - they will be added to the filtered_jobs table
+        print("Total jobs to add:", len(jobs_to_add))
+
         filtered_list = [job for job in job_list if job not in jobs_to_add]
+
         df = pd.DataFrame(jobs_to_add)
         df_filtered = pd.DataFrame(filtered_list)
-        df['date_loaded'] = datetime.now()
-        df_filtered['date_loaded'] = datetime.now()
-        df['date_loaded'] = df['date_loaded'].astype(str)
-        df_filtered['date_loaded'] = df_filtered['date_loaded'].astype(str)        
-        
+
+        df['date_loaded'] = datetime.now().isoformat()
+        df_filtered['date_loaded'] = datetime.now().isoformat()
+
         if conn is not None:
-            #Update or Create the database table for the job list
             if table_exists(conn, jobs_tablename):
                 update_table(conn, df, jobs_tablename)
             else:
                 create_table(conn, df, jobs_tablename)
-                
-            #Update or Create the database table for the filtered out jobs
+
             if table_exists(conn, filtered_jobs_tablename):
                 update_table(conn, df_filtered, filtered_jobs_tablename)
             else:
                 create_table(conn, df_filtered, filtered_jobs_tablename)
         else:
             print("Error! cannot create the database connection.")
-        
+
         df.to_csv('linkedin_jobs.csv', index=False, encoding='utf-8')
         df_filtered.to_csv('linkedin_jobs_filtered.csv', index=False, encoding='utf-8')
+
     else:
         print("No jobs found")
-    
+
     end_time = tm.perf_counter()
     print(f"Scraping finished in {end_time - start_time:.2f} seconds")
-
 
 if __name__ == "__main__":
     config_file = 'config.json'  # default config file

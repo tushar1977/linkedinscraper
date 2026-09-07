@@ -255,6 +255,17 @@ def read_jobs_from_db():
 def verify_db_schema():
     conn = sqlite3.connect(config["db_path"])
     cursor = conn.cursor()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS jobs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT,
+            company TEXT,
+            location TEXT,
+            description TEXT,
+            job_url TEXT,
+            date_scraped TEXT
+        )
+        """)
 
     # Get the table information
     cursor.execute("PRAGMA table_info(jobs)")
@@ -270,6 +281,13 @@ def verify_db_schema():
         # If it doesn't exist, add it
         cursor.execute("ALTER TABLE jobs ADD COLUMN resume TEXT")
         print("Added resume column to jobs table")
+
+    if "hidden" not in [column[1] for column in table_info]:
+        cursor.execute("ALTER TABLE jobs ADD COLUMN hidden INTEGER DEFAULT 0")
+        print("Added hidden column to jobs table")
+
+    if "date" not in [column[1] for column in table_info]:
+        cursor.execute("ALTER TABLE jobs ADD COLUMN date TEXT")
 
     conn.close()
 
